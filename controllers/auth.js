@@ -33,4 +33,21 @@ router.post('/sign-up',async(req,res)=>{
     const newUser=await User.create(req.body)
     res.send (`welcome ${newUser.username}`)
 })
+
+router.get('/sign-in',(req,res)=>{
+    res.render(`auth/sign-in.ejs`)
+})
+
+// POST to sign the user in (create session)
+
+router.post('/sign-in', async(req,res)=>{
+    const userIdatabase= await User.findOne({username:req.body.username})
+    // the userIdatabase is by default is set to null, so in the next line it will check if 
+    // it's not null it means that is already taken(exsists in the DB)
+    if(!userIdatabase){
+        return res.send('loginfailed, plz try again')
+    }
+    const validPassword=bcrypt.compareSync(req.body.password,userIdatabase.password)
+})
+
 module.exports=router
